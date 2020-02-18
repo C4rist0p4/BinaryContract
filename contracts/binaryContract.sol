@@ -1,4 +1,4 @@
-pragma solidity >=0.5.0 <0.7.0;
+pragma solidity ^0.5.0;
 import "./provableAPI.sol";
 import "./Integers.sol";
 
@@ -17,13 +17,9 @@ contract binaryContract is usingProvable {
     event LogNewProvableQuery(string description);
     event LogWinner(string winner);
 
-    constructor(uint256 _inset, bool _lowheight, address payable _counterparty)
-        public
-        payable
-    {
-        require(msg.value >= _inset, "Not enough ether");
-        inset = _inset;
-        owner = msg.sender;
+    constructor(bool _lowheight, address payable _counterparty) public payable {
+        //owner = msg.sender;
+        owner = 0xb17336486C8cfB2fc8bcD964F16d9258041c84C4;
         lowheight = _lowheight;
         counterparty = _counterparty;
         getPrice(0);
@@ -47,7 +43,7 @@ contract binaryContract is usingProvable {
         }
     }
 
-    function getPrice(uint256 time) private {
+    function getPrice(uint256 time) public payable {
         if (provable_getPrice("URL") > address(this).balance) {
             emit LogNewProvableQuery(
                 "Provable query was NOT sent, please add some ETH to cover for the query fee!"
@@ -74,7 +70,6 @@ contract binaryContract is usingProvable {
     }
 
     function getWinner() private {
-        require(priceUpdate > 0, "Contract need more Time");
         if (priceUpdate > pricestart && lowheight == true) {
             emit LogWinner("winner counterparty");
             selfdestruct(counterparty);

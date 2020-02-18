@@ -10,8 +10,8 @@ contract("Binary Contract Tests", accounts => {
 
   beforeEach(
     async () => (
-      ({ contract } = await binaryContract.deployed(web3.utils.toWei("1", "ether"), true, account[1], {
-        value: web3.utils.toWei("1", "ether"),
+      ({ contract } = await binaryContract.deployed(true, account[1], {
+        value: web3.utils.toWei("0.5", "ether"),
         from: account[0]
       })),
        ({ methods, events } = new web3.eth.Contract(
