@@ -15,6 +15,7 @@ contract binaryContract is usingProvable {
     event LogPriceUpdate(string price);
     event LogPriceStart(string price);
     event LogNewProvableQuery(string description);
+    event LogWinner(string winner);
 
     constructor(uint256 _inset, bool _lowheight, address payable _counterparty)
         public
@@ -38,7 +39,7 @@ contract binaryContract is usingProvable {
             emit LogPriceStart(result);
             pricestart = Integers.deletePoint(result);
             startTime = now;
-            getPrice(5);
+            getPrice(10);
         } else {
             priceUpdate = Integers.deletePoint(result);
             emit LogPriceUpdate(result);
@@ -46,13 +47,15 @@ contract binaryContract is usingProvable {
         }
     }
 
-    function getPrice(uint256 time) public payable {
-        //nur vertrag aufrufen
+    function getPrice(uint256 time) private {
         if (provable_getPrice("URL") > address(this).balance) {
             emit LogNewProvableQuery(
                 "Provable query was NOT sent, please add some ETH to cover for the query fee!"
             );
         } else {
+            emit LogNewProvableQuery(
+                "Provable query was sent, standing by for the answer..."
+            );
             provable_query(
                 time,
                 "URL",
@@ -70,16 +73,16 @@ contract binaryContract is usingProvable {
         return 0;
     }
 
-    function getWinner() public payable {
+    function getWinner() private {
         require(priceUpdate > 0, "Contract need more Time");
         if (priceUpdate > pricestart && lowheight == true) {
-            emit LogNewProvableQuery("winner counterparty");
+            emit LogWinner("winner counterparty");
             selfdestruct(counterparty);
         } else if (priceUpdate < pricestart && lowheight == false) {
-            emit LogNewProvableQuery("winner counterparty");
+            emit LogWinner("winner counterparty");
             selfdestruct(counterparty);
         }
-        emit LogNewProvableQuery("winner owner");
+        emit LogWinner("winner owner");
         selfdestruct(owner);
     }
 }

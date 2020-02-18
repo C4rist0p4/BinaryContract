@@ -2,7 +2,7 @@ const Web3 = require("web3");
 const { waitForEvent } = require("./utils");
 const binaryContract = artifacts.require("./binaryContract.sol");
 const web3 = new Web3(
-  new Web3.providers.WebsocketProvider("ws://localhost:9545")
+  new Web3.providers.WebsocketProvider("ws://localhost:7545")
 );
 
 contract("Binary Contract Tests", accounts => {
@@ -32,13 +32,16 @@ contract("Binary Contract Tests", accounts => {
     );
   });
 
-  it("Get the winner", async () => {
+  it("Log the winner", async () => {
     const {
-      returnValues: { Query }
-    } = await waitForEvent(events.LogNewProvableQuery);
-    assert.equal(Query,
-     "winner counterparty",
-      "Query is " + Query
-    );
+      returnValues: { winner }
+    } = await waitForEvent(events.LogWinner);
+    console.log(winner);
+    if (winner == "winner counterparty"){
+      assert.strictEqual(winner,"winner counterparty", "No winner log");
+    } else {
+      assert.strictEqual(winner,"winner owner", "No winner log");
+    }
+
   });
 });
