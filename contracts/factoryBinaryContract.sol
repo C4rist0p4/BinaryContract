@@ -1,15 +1,9 @@
 pragma solidity ^0.5.0;
 
 import "./binaryContract.sol";
+import "./contractRegistry.sol";
 
-contract FactoryBinaryContract {
-    struct Contracts {
-        binaryContract addaddress;
-    }
-
-    mapping(address => Contracts) contracts;
-
-    binaryContract[] public deployedBinaryContract;
+contract FactoryBinaryContract is contractRegistry {
     address payable owner;
     binaryContract newbinaryContract;
 
@@ -25,6 +19,7 @@ contract FactoryBinaryContract {
             _lowheight,
             msg.sender
         );
-        contracts[msg.sender].addaddress = newbinaryContract;
+
+        setContract(msg.sender, address(newbinaryContract));
     }
 }

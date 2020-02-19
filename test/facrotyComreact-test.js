@@ -19,4 +19,8 @@ contract("Factory Contract Tests", accounts => {
         await this.factory.creatContract(web3.utils.toWei("0.5", "ether"), true, {value: web3.utils.toWei("0.5", "ether"), from: account[2] });  
     });
 
+    it("Get Contracs Adresses", async () => {
+      console.log(await this.factory.getContracts({from: account[2]}));  
+    });
+
 });
